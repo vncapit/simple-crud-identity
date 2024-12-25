@@ -3,6 +3,8 @@ package com.cap.identity_service.service;
 import com.cap.identity_service.dto.request.UserCreationRequest;
 import com.cap.identity_service.dto.request.UserUpdateRequest;
 import com.cap.identity_service.entity.User;
+import com.cap.identity_service.exception.AppException;
+import com.cap.identity_service.exception.ErrorCode;
 import com.cap.identity_service.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,6 +18,9 @@ public class UserService {
     private UserRepository userRepository;
 
     public User createUser(UserCreationRequest request) {
+        if(userRepository.existsByUsername((request.getUsername()))) {
+            throw new AppException(ErrorCode.USER_EXISTED);
+        }
         User user = new User();
 
         user.setUsername(request.getUsername());
